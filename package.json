@@ -8,7 +8,7 @@
     "develop": "node_modules/.bin/nodemon app.js --exec babel-node",
     "start": "nodemon app.js --exec babel-node --"
   },
-  "author": "Mateo Komljenovic",
+  "author": "Roberto Kedmenec",
   "license": "ISC",
   "dependencies": {
     "babel-cli": "^6.26.0",
