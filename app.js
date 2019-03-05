@@ -9,6 +9,54 @@ const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+// http://localhost:80/api/todos/1
+app.put('/api/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10)
+    let todoFound
+    let itemIndex
+
+    db.map((todo, index) => {
+        if (todo.id === id) {
+            todoFound = todo
+            itemIndex = index
+        }
+    })
+
+    if (!todoFound) {
+        return res.status(404).send({
+            success: "false",
+            message: "todo not found"
+        })
+    }
+
+    if (!req.body.title) {
+        return res.status(400).send({
+            success: "false",
+            message: "title is a mandatory field"
+        })
+    } else if (!req.body.description) {
+        return res.status(400).send({
+            success: "false",
+            message: "description is a mandatory field"
+        })
+    }
+
+    const updatedTodo = {
+        id: todoFound.id,
+        title: req.body.title || todoFound.title,
+        description: req.body.description || todoFound.description
+    }
+
+    db.splice(itemIndex, 1, updatedTodo)
+
+    return res.status(201).send({
+        success: "true",
+        message: "todo was update successfully",
+        updatedTodo
+    })
+})
+
+
 app.post('/api/todos', (req, res) => {
     if (!req.body.title) {
         return res.status(400).send({
@@ -35,12 +83,6 @@ app.post('/api/todos', (req, res) => {
         success: 'true',
         message: 'todo added successfuly'
     })
-
-
-
-
-
-
 })
 
 // localhost:80/api/todos/1
